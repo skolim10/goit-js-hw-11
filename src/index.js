@@ -1,24 +1,24 @@
 import { Notify } from 'notiflix';
-import simpleLightbox from 'simplelightbox';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { fetchImages } from './api';
 
 const searchForm = document.querySelector('#search-form');
-// const searchButton = document.querySelector('button[type=submit]');
 const loadMoreButtton = document.querySelector('.load-more');
 const gallery = document.querySelector('.gallery');
 
-searchForm.addEventListener('submit', onSearchFormSubmit);
+searchForm.addEventListener('submit', onSearchForm);
 loadMoreButtton.addEventListener('click', onLoadMoreButton);
 
 let searchRequest = '';
 let page = 1;
 let perPage = 39;
-let simpleLB;
+let simpleLb;
 
-function onSearchFormSubmit(e) {
+function onSearchForm(e) {
   e.preventDefault();
   page = 1;
-  searchRequest = e.currentTarget.searchQuery.value.trim();
+  let searchRequest = e.currentTarget.searchQuery.value.trim();
   gallery.innerHTML = '';
   loadMoreButtton.classList.add('is-hidden');
   if (!searchRequest) return;
@@ -29,7 +29,7 @@ function onSearchFormSubmit(e) {
         alertNoImagesFound();
       } else {
         createMarkup(data.hits);
-        simpleLB = new simpleLightbox('.gallery a', {
+        simpleLb = new SimpleLightbox('.gallery a', {
           captionsData: 'alt',
           captionPosition: 'bottom',
           captionDelay: 250,
@@ -47,12 +47,12 @@ function onSearchFormSubmit(e) {
 
 function onLoadMoreButton() {
   page += 1;
-  simpleLB.destroy();
+  simpleLb.destroy();
 
   fetchImages(searchRequest, page, perPage)
     .then(({ data }) => {
       createMarkup(data.hits);
-      simpleLB = new simpleLightbox('.gallery a').refresh();
+      simpleLb = new SimpleLightbox('.gallery a').refresh();
 
       const totalPages = Math.ceil(data.totalHits / perPage);
 
